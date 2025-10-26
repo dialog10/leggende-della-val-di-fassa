@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Leggende della Val di Fassa</title>
+
+  <!-- Leaflet CSS from CDN -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    crossorigin=""
+  />
+  <style>
+    html, body { height: 100%; margin: 0; }
+    #map { height: 100vh; width: 100%; }
+
+    /* ---- Title overlay in top-left ---- */
+    #map-title {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 1000; 
+      background: rgba(255, 255, 255, 0.85);
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-family: Georgia, serif;
+      font-size: 26px;
+      font-weight: bold;
+      color: #2c3e50;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* ---- Popup links ---- */
+    .popup-link {
+      text-decoration: none;
+      color: #0078A8;
+      font-weight: bold;
+      font-size: 15px;
+    }
+    .popup-link:hover {
+      text-decoration: underline;
+    }
+    .popup-desc {
+      color: #333;
+      font-size: 13px;
+      margin-top: 4px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="map-title">Leggende della Val di Fassa</div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+    // map image png otherwise its gonna be blank
+    const mapImage = 'map.png';
+
+    const img = new Image();
+    img.src = mapImage;
+
+    img.onload = () => {
+      const imgWidth = img.naturalWidth; // var? for bounds otherwise u dont have a thing to indicate
+      const imgHeight = img.naturalHeight;
+
+      // bounds
+      const bounds = [[0,0], [imgHeight, imgWidth]];
+
+      // idk what this means i think its the zoom
+      const map = L.map('map', {
+        crs: L.CRS.Simple,
+        minZoom: -5,
+        maxZoom: 5
+      });
+
+      // image overlay
+      L.imageOverlay(mapImage, bounds).addTo(map);
+      map.fitBounds(bounds);
+
+      // pins, coordinates needed for pins = google maps
+      const pins = [
+        { xPct: 10, yPct: 40, title: 'Leggenda del Re Laurino', link: 're-laurino.html', desc: 'Clicca sul titolo per visualizzare la leggenda'},
+        { xPct: 45, yPct: 90, title: 'Il Gigante Sassolungo', link: 'sassolungo.html', desc: 'Clicca sul titolo per visualizzare la leggenda'},
+        { xPct: 85, yPct: 5, title: 'Principessa Ombretta', link: 'principessa-ombretta.html', desc: 'Clicca sul titolo per visualizzare la leggenda' }
+      ];
+
+      pins.forEach(pin => {
+        // whatever this is
+        const x = (pin.xPct/100) * imgWidth;
+        const y = (pin.yPct/100) * imgHeight;
+
+        const popupHTML = `
+          <a href="${pin.link}" class="popup-link" target="_blank">${pin.title}</a>
+          <span class="popup-desc">${pin.desc}</span>
+        `;
+
+        L.marker([y, x])
+          .addTo(map)
+          .bindPopup(popupHTML);
+      });
+
+      // Tweak
+      setTimeout(() => map.invalidateSize(), 200);
+    };
+
+    img.onerror = () => {
+      alert('Cannot load map.png. Is it in the same folder?');
+    };
+  </script>
+</body>
+</html>
+
+
+
+
