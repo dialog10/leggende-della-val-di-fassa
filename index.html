@@ -74,6 +74,8 @@
         minZoom: -5,
         maxZoom: 5
       });
+      map.attributionControl.addAttribution('Map data © <a href="https://leafletjs.com/" target="_blank">Leaflet</a>');
+
 
       // image overlay
       L.imageOverlay(mapImage, bounds).addTo(map);
@@ -111,6 +113,7 @@
   </script>
 </body>
 </html>
+
 
 
 
